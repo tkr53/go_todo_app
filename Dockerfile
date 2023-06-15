@@ -1,4 +1,4 @@
-FROM golang:1.182-bullseye as deploy-builder
+FROM golang:1.18.2-bullseye as deploy-builder
 
 WORKDIR /app
 
@@ -8,11 +8,11 @@ RUN go mod download
 COPY . .
 RUN go build -trimpath -ldflags "-s -s" -o app
 
-FROM debian:bulleye-slim as deploy
+FROM debian:bullseye-slim as deploy
 
 RUN apt-get update
 
-COPY --from=deploy-bulider /app/app .
+COPY --from=deploy-builder /app/app .
 
 CMD ["./app"]
 
