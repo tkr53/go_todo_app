@@ -44,6 +44,6 @@ func (s *Server) Run(ctx context.Context) error {
 		log.Printf("failed to shutdown: %+v", err)
 	}
 
-	//グレイトフルシャットダウンを待つ
+	// グレイトフルシャットダウンを待つ
 	return eg.Wait()
 }
