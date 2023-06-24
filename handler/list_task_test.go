@@ -1,17 +1,17 @@
 package handler
 
 import (
+	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/tkr53/go_todo_app/entity"
-	"github.com/tkr53/go_todo_app/store"
 	"github.com/tkr53/go_todo_app/testutil"
 )
 
 func TestListTask(t *testing.T) {
-	t.Skip("リファクタリング")
 	type want struct {
 		status  int
 		rspFile string
@@ -55,9 +55,14 @@ func TestListTask(t *testing.T) {
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, "/tasks", nil)
 
-			sut := ListTask{&store.TaskStore{
-				Tasks: map[entity.TaskID]*entity.Task{},
-			}}
+			moq := &ListTasksServiceMock{}
+			moq.ListTasksFunc = func(ctx context.Context) (entity.Tasks, error) {
+				if tt.tasks != nil {
+					return tt.tasks, nil
+				}
+				return nil, errors.New("error from mock")
+			}
+			sut := ListTask{Service: moq}
 			sut.ServeHTTP(w, r)
 
 			resp := w.Result()
