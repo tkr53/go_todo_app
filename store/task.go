@@ -9,7 +9,7 @@ import (
 func (r *Repository) ListTasks(ctx context.Context, db Queryer, id entity.UserID) (entity.Tasks, error) {
 	tasks := entity.Tasks{}
 	sql := `SELECT
-				id, title, status, created, modified FROM task WHERE user_id = ?;`
+				id, user_id, title, status, created, modified FROM task WHERE user_id = ?;`
 	if err := db.SelectContext(ctx, &tasks, sql, id); err != nil {
 		return nil, err
 	}
